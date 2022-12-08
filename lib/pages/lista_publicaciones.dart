@@ -19,10 +19,8 @@ class _ListaPublicacionesState extends State<ListaPublicaciones> {
       // boton para hacer una publicacion
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const CrearPublicacion()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CrearPublicacion()));
         },
         child: const Icon(Icons.add_rounded),
       ),
