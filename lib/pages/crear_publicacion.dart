@@ -1,11 +1,32 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class CrearPublicacion extends StatelessWidget {
-  CrearPublicacion({super.key});
+class CrearPublicacion extends StatefulWidget {
+  const CrearPublicacion({super.key});
 
+  @override
+  State<CrearPublicacion> createState() => _CrearPublicacionState();
+}
+
+class _CrearPublicacionState extends State<CrearPublicacion> {
   final sectorTextController = TextEditingController();
   final descripcionTextController = TextEditingController();
+  final imagePicker = ImagePicker();
+  late File? _image1 = null;
+
+  Future getImage() async {
+    final image = await imagePicker.getImage(
+        source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      try {
+        _image1 ??= File(image!.path);
+      } catch (e) {
+        print("error");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +63,17 @@ class CrearPublicacion extends StatelessWidget {
                         ),
                       ),
                       maxLines: 5,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => {getImage()},
+                    child: Container(
+                      width: 400,
+                      height: 200,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: _image1 == null
+                          ? Image.asset('assets/images/noimage.png')
+                          : Image.file(_image1!),
                     ),
                   ),
                   // boton para "post"ear mensajes
