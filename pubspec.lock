@@ -122,8 +122,6 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: transitive
-  http:
     dependency: "direct main"
     description:
       name: http
