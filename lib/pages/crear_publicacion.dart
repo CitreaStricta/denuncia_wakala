@@ -40,17 +40,18 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   }
 
   Future<http.Response> crearMensaje(
-      String login, String titulo, String texto, String ruta) async {
+      String sector, String descripcion, String texto, String ruta) async {
     return await http.post(
-      Uri.parse("${Global.baseApiUrl}api/mensajes"),
+      Uri.parse("${Global.baseApiUrl}/api/wuakalasApi/Postwuakalas"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'login': login,
-        'titulo': titulo,
-        'texto': texto,
-        'imagen': await Utiles().toBase64(ruta),
+      body: jsonEncode(<String, dynamic>{
+        'sector': sector,
+        'descripcion': descripcion,
+        'id_autor': Global.idUsuario,
+        'base64Foto1': _image1,
+        'base64Foto2': _image2,
       }),
     );
   }

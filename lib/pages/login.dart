@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:denuncia_wakala/global.dart';
 import 'package:denuncia_wakala/pages/register.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +23,15 @@ class _LoginState extends State<Login> {
 
   Future<void> intentarLogin(String user, String password) async {
     final response = await LoginService().validar(user, password);
+
     print(response.statusCode);
     if (response.statusCode == 200) {
       //almacenar de alguna manera el login
       //await pref.setString('Usuario', user);
       Global.localUsername = user;
+      final dynamic data = jsonDecode(response.body);
+      Global.idUsuario = data["id"];
+      print(Global.idUsuario);
       if (!mounted) return;
       Navigator.push(
         context,
