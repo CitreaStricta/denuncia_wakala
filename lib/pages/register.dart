@@ -1,6 +1,7 @@
 import 'package:denuncia_wakala/global.dart';
 import 'package:denuncia_wakala/pages/login.dart';
 import 'package:flutter/material.dart';
+import '../services/login_service';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
@@ -14,26 +15,27 @@ class _RegisterState extends State<Register> {
   late final pref;
 
   TextEditingController userController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmController = TextEditingController();
 
-  //Future<void> registrarDatos(String user, String password) async {
-  //  final response = await LoginService().registrar(user, password);
-//
-  //  print("register status code: " + response.statusCode.toString());
-//
-  //  if (response.statusCode == 200) {
-  //    //almacenar de alguna manera el login
-  //    Global.localUsername = user;
-  //    Navigator.pop(context);
-  //  } else {
-  //    //text: 'Ese user ya está registrado',
-  //  }
-  //}
+  Future<void> registrarDatos(
+      String email, String nombre, String password) async {
+    final response = await LoginService().registrar(email, nombre, password);
+    print(response.statusCode);
+
+    if (!mounted) return;
+    if (response.statusCode == 200) {
+      //almacenar de alguna manera el login
+      Global.localUsername = nombre;
+      Navigator.pop(context);
+    } else {
+      //text: 'Ese user ya está registrado',
+    }
+  }
 
   @override
   void initState() {
-    //TODO: implement initState
     super.initState();
   }
 
@@ -68,6 +70,18 @@ class _RegisterState extends State<Register> {
               ),
               sizedBox(10),
               TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  hintText: "Ingrese su email",
+                  labelText: "Email",
+                  suffixIcon: const Icon(Icons.mail),
+                ),
+              ),
+              sizedBox(10),
+              TextField(
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -95,11 +109,13 @@ class _RegisterState extends State<Register> {
                 style: ElevatedButton.styleFrom(
                   // backgroundColor: Colors.indigo,
                   shape: const StadiumBorder(),
-                  minimumSize: Size(double.infinity, 60),
+                  minimumSize: const Size(double.infinity, 60),
                 ),
                 onPressed: () {
                   if (userController.text.isEmpty) {
                     //text: 'Debes proporcionar un nombre de usuario',
+                  } else if (emailController.text.isEmpty) {
+                    //text: 'Debes proporcionar un email',
                   } else if (passwordController.text.isEmpty) {
                     //text: 'Debes proporcionar una password',
                   } else if (passwordConfirmController.text.isEmpty) {
@@ -108,10 +124,11 @@ class _RegisterState extends State<Register> {
                       .contains(passwordConfirmController.text)) {
                     //text: 'Las passwords deben coincidir',
                   } else {
-                    //registrarDatos(
-                    //  userController.text,
-                    //  passwordController.text,
-                    //);
+                    registrarDatos(
+                      emailController.text,
+                      userController.text,
+                      passwordController.text,
+                    );
                   }
                 },
                 child: const Text("Registrarse"),
