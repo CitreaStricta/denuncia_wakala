@@ -21,6 +21,9 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   final imagePicker = ImagePicker();
   late File? _image1 = null;
   late File? _image2 = null;
+  String pathImage1 = '';
+  String pathImage2 = '';
+
   Future<http.Response>? _futureMensaje;
 
   Future getImage(int imageNumber) async {
@@ -39,19 +42,21 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     });
   }
 
-  Future<http.Response> crearMensaje(
-      String sector, String descripcion, String texto, String ruta) async {
+  Future<http.Response> crearMensaje(String sector, String descripcion,
+      String texto, String rutaImg1, String rutaImg2) async {
+    print(await Utiles().toBase64(rutaImg1));
+    print(await Utiles().toBase64(rutaImg2));
     return await http.post(
       Uri.parse("${Global.baseApiUrl}/api/wuakalasApi/Postwuakalas"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, dynamic>{
+      body: jsonEncode(<String, String>{
         'sector': sector,
         'descripcion': descripcion,
-        'id_autor': Global.idUsuario,
-        'base64Foto1': _image1,
-        'base64Foto2': _image2,
+        'id_autor': Global.idUsuario.toString(),
+        'base64Foto1': await Utiles().toBase64(rutaImg1),
+        'base64Foto2': await Utiles().toBase64(rutaImg2),
       }),
     );
   }
@@ -149,13 +154,17 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );
-
                         setState(() {
+                          if (_image1 != null) pathImage1 = _image1!.path;
+                          if (_image2 != null) pathImage2 = _image2!.path;
+
                           _futureMensaje = crearMensaje(
                               Global.localUsername,
                               sectorTextController.text,
                               descripcionTextController.text,
-                              _image1!.path);
+                              pathImage1,
+                              pathImage2);
+                          print("retorno ci xd");
                         });
                       },
                       // asegurarse de que:
