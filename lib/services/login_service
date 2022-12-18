@@ -9,19 +9,18 @@ import '../global.dart';
 class LoginService {
   Future<http.Response> validar(String email, String password) async {
     return await http.get(
-      Uri.parse("${Global.baseApiUrl}/api/usuariosApi/Getusuario?email=${email}password=${password}")
+      Uri.parse("${Global.baseApiUrl}/api/usuariosApi/Getusuario?email=$email&password=$password")
     );
   }
 
   Future<http.Response> registrar(String email, String password) async {
     return await http.post(
-      Uri.parse('${Global.baseApiUrl}/api/Usuarios?login=$login&pass=$pass'),
+      Uri.parse('${Global.baseApiUrl}/api/Usuarios?login=$email&pass=$password'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: <String, dynamic>{
         'email': email,
-        'nombre': nombre,
         'pass': password,
       }
     );
