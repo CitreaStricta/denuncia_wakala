@@ -30,8 +30,8 @@ class _LoginState extends State<Login> {
       //await pref.setString('Usuario', user);
       Global.localUsername = user;
       final dynamic data = jsonDecode(response.body);
-      Global.idUsuario = data["id"];
-      print(Global.idUsuario);
+      Global.localId = data["id"];
+      print(Global.localId);
       if (!mounted) return;
       Navigator.push(
         context,

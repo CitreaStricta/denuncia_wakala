@@ -47,14 +47,14 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     print(await Utiles().toBase64(rutaImg1));
     print(await Utiles().toBase64(rutaImg2));
     return await http.post(
-      Uri.parse("${Global.baseApiUrl}/api/wuakalasApi/Postwuakalas"),
+      Uri.parse("${Global.baseApiUrl}/api/wakalasApi/Postwakalas"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
         'sector': sector,
         'descripcion': descripcion,
-        'id_autor': Global.idUsuario.toString(),
+        'id_autor': Global.localId.toString(),
         'base64Foto1': await Utiles().toBase64(rutaImg1),
         'base64Foto2': await Utiles().toBase64(rutaImg2),
       }),
@@ -71,22 +71,23 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // texto de mas arriba
-                  const Text("Avisar por nuevo Gato"),
+                  const Text("Denuncia de wakala"),
                   // burbuja de texto para el sector donde fue el avistamiento
                   TextField(
                     controller: sectorTextController,
                     decoration: InputDecoration(
-                      hintText: "Donde ocurrio?",
+                      hintText: "¿Donde ocurrió?",
                       labelText: "Sector",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16)),
                     ),
                   ),
+                  const SizedBox(height: 10),
                   // burbuja de texto para la descripcion
                   TextField(
                     controller: descripcionTextController,
                     decoration: InputDecoration(
-                      hintText: "Descripcion",
+                      hintText: "Descripción",
                       labelText: "Descripción",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16)),
@@ -138,7 +139,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                             context: context,
                             type: CoolAlertType.error,
                             title: 'Oops...',
-                            text: 'Descripcion de 15 o mas caracteres xfa',
+                            text: 'Descripcion de 15 o mas caracteres',
                             loopAnimation: false,
                           );
                         } else if (_image1 == null && _image2 == null) {
@@ -150,7 +151,6 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                             loopAnimation: false,
                           );
                         }
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );
@@ -170,18 +170,19 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                       // asegurarse de que:
                       // las fotos se deben enviar en base643
 
-                      child: const Text("Denunciar Gato")),
+                      child: const Text("Denunciar")),
+                  const SizedBox(height: 10),
                   // boton por si te quieres arrepentir de hacer una publicacion
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
-                        minimumSize: Size(double.infinity, 60),
+                        minimumSize: const Size(double.infinity, 60),
                       ),
                       onPressed: () {
                         // volver a donde estabamos
                         Navigator.pop(context);
                       },
-                      child: Text("Me arrepenti xd")),
+                      child: const Text("Volver")),
                 ],
               ))),
     );
