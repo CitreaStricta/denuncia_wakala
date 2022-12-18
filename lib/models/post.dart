@@ -1,35 +1,52 @@
+import 'package:denuncia_wakala/models/comment.dart';
+
 class Post {
   static const String tableName = 'Post';
 
   int? id;
-  String title = '';
-  String text = '';
-  String username = '';
-  DateTime date = DateTime.now();
+  String sector = '';
+  String descripcion = '';
+  String autor = '';
+  String urlFoto1 = '';
+  String urlFoto2 = '';
+  String sigueAhi = '';
+  String yaNoEsta = '';
+  List<Comment> comentarios = [];
+  DateTime fechaPublicacion = DateTime.now();
 
-  Map<String, Object?> toMap() {
-    var map = <String, Object?>{
-      'title': title,
-      'text': text,
-      'username': username,
-      'date': date,
+  Map<String, dynamic?> toMap() {
+    var map = <String, dynamic?>{
+      'id': id,
+      'sector': sector,
+      'descripcion': descripcion,
+      'autor': autor,
+      'urlFoto1': urlFoto1,
+      'urlFoto2': urlFoto2,
+      'sigueAhi': sigueAhi,
+      'yaNoEsta': yaNoEsta,
+      'comentarios': comentarios,
+      'fechaPublicacion': fechaPublicacion,
     };
-    map['id'] = id;
     return map;
   }
 
   Post({
     this.id,
-    required this.title,
-    required this.text,
-    required this.username,
+    required this.sector,
+    required this.descripcion,
+    required this.autor,
+    required this.urlFoto1,
+    required this.urlFoto2,
+    required this.sigueAhi,
+    required this.yaNoEsta,
+    required this.comentarios,
   });
 
   Post.fromMap(Map<String, Object?> map) {
-    id = map['id'] as int;
-    title = map['title'] as String;
-    text = map['text'] as String;
-    username = map['username'] as String;
-    date = map['date'] as DateTime;
+    //id = map['id'] as int;
+    //title = map['title'] as String;
+    //text = map['text'] as String;
+    //username = map['username'] as String;
+    //date = map['date'] as DateTime;
   }
 }

@@ -150,6 +150,14 @@ class _LoginState extends State<Login> {
               ),
               sizedBox(5),
               GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Register(),
+                    ),
+                  );
+                },
                 child: TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -158,7 +166,6 @@ class _LoginState extends State<Login> {
                         builder: (context) => const Register(),
                       ),
                     );
-                    // AQUI TAMBIEN LA DIRECCION PARA LA PAGINA DE SIGN_UP
                   },
                   child: const Text(
                     "Crear una cuenta",

@@ -136,12 +136,11 @@ class _RegisterState extends State<Register> {
               sizedBox(30),
               GestureDetector(
                 onTap: () {
-                  // AQUI LA DIRECCION PARA LA PAGINA DE SIGN_UP
+                  Navigator.pop(context);
                 },
                 child: TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    // AQUI TAMBIEN LA DIRECCION PARA LA PAGINA DE SIGN_UP
                   },
                   child: const Text(
                     "Ya tengo cuenta",
