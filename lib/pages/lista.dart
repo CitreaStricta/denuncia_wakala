@@ -1,3 +1,4 @@
+import 'package:denuncia_wakala/pages/crear_publicacion.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -5,9 +6,6 @@ import 'package:http/http.dart' as http;
 
 import '../global.dart';
 import '../models/post.dart';
-
-import '../widgets/sql_helper.dart';
-import 'crearPost.dart';
 
 class Lista extends StatefulWidget {
   const Lista({Key? key}) : super(key: key);
@@ -29,47 +27,48 @@ class _ListaState extends State<Lista> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CrearPost(),
+              builder: (context) => CrearPublicacion(),
             ),
           );
         },
         tooltip: "Crear nota",
         child: const Icon(Icons.add_rounded),
       ),
-      body: FutureBuilder<List<Post>>(
-        future: SqlHelper.instance.getPosts(),
-        builder: (context, snapshot) {
-          //snapshot.data es la List<Post>
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(snapshot.data![index].title),
-                  subtitle: Text(
-                      "By ${snapshot.data![index].username} At ${snapshot.data![index].date}"),
-                  isThreeLine: true,
-                  leading: Text(snapshot.data![index].id.toString()),
-                  onTap: () => navigateToPost(context, snapshot.data![index]),
-                  trailing: IconButton(
-                    alignment: Alignment.center,
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      SqlHelper.instance.deletePost(snapshot.data![index]);
-                      // setState(() {});
-                    },
-                  ),
-                );
-              },
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Oops!"),
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+
+      // body: FutureBuilder<List<Post>>(
+      //   future: SqlHelper.instance.getPosts(),
+      //   builder: (context, snapshot) {
+      //     //snapshot.data es la List<Post>
+      //     if (snapshot.hasData) {
+      //       return ListView.builder(
+      //         itemCount: snapshot.data?.length,
+      //         itemBuilder: (BuildContext context, int index) {
+      //           return ListTile(
+      //             title: Text(snapshot.data![index].title),
+      //             subtitle: Text(
+      //                 "By ${snapshot.data![index].username} At ${snapshot.data![index].date}"),
+      //             isThreeLine: true,
+      //             leading: Text(snapshot.data![index].id.toString()),
+      //             onTap: () => navigateToPost(context, snapshot.data![index]),
+      //             trailing: IconButton(
+      //               alignment: Alignment.center,
+      //               icon: const Icon(Icons.delete),
+      //               onPressed: () async {
+      //                 SqlHelper.instance.deletePost(snapshot.data![index]);
+      //                 // setState(() {});
+      //               },
+      //             ),
+      //           );
+      //         },
+      //       );
+      //     } else if (snapshot.hasError) {
+      //       return const Center(
+      //         child: Text("Oops!"),
+      //       );
+      //     }
+      //     return const Center(child: CircularProgressIndicator());
+      //   },
+      // ),
     );
   }
 }
