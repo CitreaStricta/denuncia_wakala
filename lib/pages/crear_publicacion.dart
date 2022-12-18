@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:cool_alert/cool_alert.dart';
+import 'package:denuncia_wakala/utils/utiles.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import '../global.dart';
 
 class CrearPublicacion extends StatefulWidget {
   const CrearPublicacion({super.key});
@@ -15,17 +20,39 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   final descripcionTextController = TextEditingController();
   final imagePicker = ImagePicker();
   late File? _image1 = null;
+  late File? _image2 = null;
+  Future<http.Response>? _futureMensaje;
 
-  Future getImage() async {
+  Future getImage(int imageNumber) async {
     final image = await imagePicker.getImage(
         source: ImageSource.camera, imageQuality: 50);
     setState(() {
       try {
-        _image1 ??= File(image!.path);
+        if (imageNumber == 1) {
+          _image1 ??= File(image!.path);
+        } else {
+          _image2 ??= File(image!.path);
+        }
       } catch (e) {
         print("error");
       }
     });
+  }
+
+  Future<http.Response> crearMensaje(
+      String login, String titulo, String texto, String ruta) async {
+    return await http.post(
+      Uri.parse("${Global.baseApiUrl}api/mensajes"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'login': login,
+        'titulo': titulo,
+        'texto': texto,
+        'imagen': await Utiles().toBase64(ruta),
+      }),
+    );
   }
 
   @override
@@ -42,39 +69,49 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                   // burbuja de texto para el sector donde fue el avistamiento
                   TextField(
                     controller: sectorTextController,
-                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: "Donde ocurrio?",
                       labelText: "Sector",
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5)),
+                          borderRadius: BorderRadius.circular(16)),
                     ),
                   ),
                   // burbuja de texto para la descripcion
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: descripcionTextController,
-                      decoration: const InputDecoration(
-                        hintText: "Descripcion",
-                        labelText: "Descripción",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  TextField(
+                    controller: descripcionTextController,
+                    decoration: InputDecoration(
+                      hintText: "Descripcion",
+                      labelText: "Descripción",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                    ),
+                    maxLines: 5,
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => {getImage(1)},
+                        child: Container(
+                          width: 176,
+                          height: 176,
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: _image1 == null
+                              ? Image.asset('assets/images/noimage.png')
+                              : Image.file(_image1!),
                         ),
                       ),
-                      maxLines: 5,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => {getImage()},
-                    child: Container(
-                      width: 400,
-                      height: 200,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: _image1 == null
-                          ? Image.asset('assets/images/noimage.png')
-                          : Image.file(_image1!),
-                    ),
+                      GestureDetector(
+                        onTap: () => {getImage(2)},
+                        child: Container(
+                          width: 176,
+                          height: 176,
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: _image2 == null
+                              ? Image.asset('assets/images/noimage.png')
+                              : Image.file(_image2!),
+                        ),
+                      )
+                    ],
                   ),
                   // boton para "post"ear mensajes
                   ElevatedButton(
@@ -83,25 +120,46 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                         minimumSize: const Size(double.infinity, 60),
                       ),
                       onPressed: () {
-                        if (sectorTextController.toString().isEmpty) {
+                        if (sectorTextController.text.isEmpty) {
                           CoolAlert.show(
                               context: context,
                               type: CoolAlertType.error,
-                              text: 'Ingresa el sector del avistamiento');
-                        }
-                        if (sectorTextController.toString().length < 15) {
+                              title: 'Oops...',
+                              text: 'Ingresa el sector del avistamiento',
+                              loopAnimation: false);
+                        } else if (descripcionTextController.text.length < 15) {
                           CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.error,
-                              text: 'asdf');
+                            context: context,
+                            type: CoolAlertType.error,
+                            title: 'Oops...',
+                            text: 'Descripcion de 15 o mas caracteres xfa',
+                            loopAnimation: false,
+                          );
+                        } else if (_image1 == null && _image2 == null) {
+                          CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.error,
+                            title: 'Oops...',
+                            text: 'Ingresa al menos una imagen',
+                            loopAnimation: false,
+                          );
                         }
-                        // asegurarse de que:
-                        // el campo "sector" tenga contenido
-                        // el campo "Descripcion" tenga un minimo de 15 chars
-                        // que se envie al menos una foto
-                        // las fotos se deben enviar en base643
-                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+
+                        setState(() {
+                          _futureMensaje = crearMensaje(
+                              Global.localUsername,
+                              sectorTextController.text,
+                              descripcionTextController.text,
+                              _image1!.path);
+                        });
                       },
+                      // asegurarse de que:
+                      // las fotos se deben enviar en base643
+
                       child: const Text("Denunciar Gato")),
                   // boton por si te quieres arrepentir de hacer una publicacion
                   ElevatedButton(

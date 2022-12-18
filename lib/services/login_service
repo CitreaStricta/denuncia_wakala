@@ -15,13 +15,13 @@ class LoginService {
 
   Future<http.Response> registrar(String email, String password) async {
     return await http.post(
-      Uri.parse('${Global.baseApiUrl}/api/Usuarios?login=$login&pass=$pass'),
+      Uri.parse('${Global.baseApiUrl}/api/Usuarios?email=$login&pass=$pass'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: <String, dynamic>{
         'email': email,
-        'nombre': nombre,
+        // 'nombre': nombre,
         'pass': password,
       }
     );
