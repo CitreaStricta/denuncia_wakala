@@ -2,6 +2,7 @@ import 'package:denuncia_wakala/global.dart';
 import 'package:denuncia_wakala/pages/register.dart';
 import 'package:flutter/material.dart';
 
+import '../services/login_service';
 import 'lista.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,21 +19,18 @@ class _LoginState extends State<Login> {
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> validarDatos(String user, String password) async {
-    //final response = await LoginService().validar(user, password);
-
-    //print("login status code: " + response.statusCode.toString());
-
-    if (true) {
-      //response.statusCode == 200 || true)
+  Future<void> intentarLogin(String user, String password) async {
+    final response = await LoginService().validar(user, password);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
       //almacenar de alguna manera el login
       //await pref.setString('Usuario', user);
       Global.localUsername = user;
-      //if (!mounted) return;
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Lista(),
+          builder: (context) => const Lista(),
         ),
       );
     }
@@ -110,7 +108,7 @@ class _LoginState extends State<Login> {
                   } else if (passwordController.text.isEmpty) {
                     //text: 'Debes proporcionar una password',
                   } else {
-                    validarDatos(
+                    intentarLogin(
                       userController.text,
                       passwordController.text,
                     );
