@@ -43,9 +43,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   }
 
   Future<http.Response> crearMensaje(String sector, String descripcion,
-      String texto, String rutaImg1, String rutaImg2) async {
-    print(await Utiles().toBase64(rutaImg1));
-    print(await Utiles().toBase64(rutaImg2));
+      String rutaImg1, String rutaImg2) async {
     return await http.post(
       Uri.parse("${Global.baseApiUrl}/api/wakalasApi/Postwakalas"),
       headers: <String, String>{
@@ -159,12 +157,10 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                           if (_image2 != null) pathImage2 = _image2!.path;
 
                           _futureMensaje = crearMensaje(
-                              Global.localUsername,
                               sectorTextController.text,
                               descripcionTextController.text,
                               pathImage1,
                               pathImage2);
-                          print("retorno ci xd");
                         });
                       },
                       // asegurarse de que:
