@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:denuncia_wakala/pages/crear_publicacion.dart';
+import 'package:denuncia_wakala/pages/detalles.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -89,9 +90,7 @@ void navigateToPost(BuildContext context, int idPost) async {
       .then((http.Response response) {
     post = jsonDecode(response.body);
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Detalles(post: post)),
-    );
+        context, MaterialPageRoute(builder: (context) => Detalles()));
   });
 }
 
