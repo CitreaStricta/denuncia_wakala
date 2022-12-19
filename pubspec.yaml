@@ -34,7 +34,8 @@ dependencies:
   cool_alert: ^1.1.0
   image_picker: ^0.7.4
   sqflite: ^2.0.3+3
-  flutter_native_image: ^0.0.6 
+  flutter_native_image: ^0.0.6
+  easy_image_viewer: ^1.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

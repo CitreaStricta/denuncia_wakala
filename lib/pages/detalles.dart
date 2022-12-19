@@ -1,6 +1,7 @@
 import 'package:denuncia_wakala/models/post.dart';
 import 'package:denuncia_wakala/pages/image_Viewer.dart';
 import 'package:denuncia_wakala/utils/utiles.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../global.dart';
@@ -34,22 +35,36 @@ class _DetallesState extends State<Detalles> {
     ];
   }
 
-  Future<Widget> imageShower(context, String imagen) async {
+  Widget imageShower(context, String fotoURL) {
     return GestureDetector(
-        onTap: (() => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ImageViewer(),
-                ),
-              ),
-            }),
-        child: Container(
-          width: 176,
-          height: 176,
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Image.network(await getImage(imagen)),
-        ));
+      onTap: () {
+        showImageViewer(context,
+            Image.network('${Global.baseApiUrl}/images/$fotoURL').image,
+            swipeDismissible: false);
+      },
+      child: Container(
+        width: 150,
+        height: 400,
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
+      ),
+    );
+
+    // return GestureDetector(
+    //     onTap: (() => {
+    //           Navigator.push(
+    //             context,
+    //             MaterialPageRoute(
+    //               builder: (context) => const ImageViewer(),
+    //             ),
+    //           ),
+    //         }),
+    //     child: Container(
+    //       width: 150,
+    //       height: 400,
+    //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+    //       child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
+    //     ));
   }
 
   @override
@@ -58,6 +73,7 @@ class _DetallesState extends State<Detalles> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
+          // este container si es innecesario (prueba)
           child: Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -68,17 +84,11 @@ class _DetallesState extends State<Detalles> {
                 Text(post.descripcion),
                 // AQUI LAS DOS IMAGENES QUE SE DEBEN PODER VER Y PODER CLIQUEAR\
                 Row(children: [
-                  Image.network(
-                    '${Global.baseApiUrl}/images/${post.urlFoto1}',
-                    width: 150,
-                    height: 400,
-                  ),
-                  Image.network(
-                    '${Global.baseApiUrl}/images/${post.urlFoto2}',
-                    width: 150,
-                    height: 400,
-                  ),
-                  //Image.network(snapshot.data![1]),
+                  const Spacer(),
+                  imageShower(context, post.urlFoto1),
+                  const Spacer(),
+                  imageShower(context, post.urlFoto2),
+                  const Spacer(),
                 ]),
                 Text(post.autor),
                 Row(
@@ -131,13 +141,13 @@ class _DetallesState extends State<Detalles> {
                   ],
                 ),
                 //Row(
-                //  children: const [
-                //    // aqui va a ser mas webeado.
-                //    //Hay que hacer un "for" que nos
-                //    //devuelve todos los comentarios
-                //    // que se han hecho en este wuakala
-                //  ],
-                //),
+                //   children: const [
+                //  aqui va a ser mas webeado.
+                // Hay que hacer un "for" que nos
+                // devuelve todos los comentarios
+                //  que se han hecho en este wuakala
+                //   ],
+                // ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
