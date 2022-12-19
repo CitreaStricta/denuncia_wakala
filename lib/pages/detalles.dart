@@ -1,6 +1,11 @@
+import 'dart:html';
+
 import 'package:denuncia_wakala/models/post.dart';
 import 'package:denuncia_wakala/pages/image_Viewer.dart';
+import 'package:denuncia_wakala/utils/utiles.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../global.dart';
 
 class Detalles extends StatefulWidget {
   // static const routeName = '/detailTodoScreen';
@@ -14,34 +19,40 @@ class Detalles extends StatefulWidget {
 }
 
 class _DetallesState extends State<Detalles> {
-  // File? imagenAMostrar;
-
   Post post;
+  late File? imagen1;
+  late File? imagen2;
+
   _DetallesState(this.post);
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (imagenAMostrar != null) {}
-  // }
+  Future<String> getImage(String imagenB64) async {
+    return (await http.post(Uri.parse(
+            "${Global.baseApiUrl}/api/wakalasApi/toImagen?base64=$imagenB64")))
+        .body;
+  }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  Future<List<Image>> queryImages() async {
+    List<Image> imageList = [];
+    
+    return 
+  }
 
-  Widget imageShower(context) {
+  Future<Widget> imageShower(context, String imagen) async {
     return GestureDetector(
-      onTap: (() => {
-            Navigator.push(
-              context,
-              // de alguna forma entregarle la imagen a la vista siguiente
-              MaterialPageRoute(
-                builder: (context) => const ImageViewer(),
+        onTap: (() => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ImageViewer(),
+                ),
               ),
-            ),
-          }),
-    );
+            }),
+        child: Container(
+          width: 176,
+          height: 176,
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Image.network(await getImage(imagen)),
+        ));
   }
 
   @override
@@ -59,9 +70,13 @@ class _DetallesState extends State<Detalles> {
                 // parsear LA DESCRIPCION aqui con los datos de la api
                 Text(post.descripcion),
                 // AQUI LAS DOS IMAGENES QUE SE DEBEN PODER VER Y PODER CLIQUEAR\
-                //Row(children: const [
-                //  /*imageShower(context), imageShower(context)*/
-                //]),
+                FutureBuilder(
+                  future: queryImages(),
+                  initialData: InitialData,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return ;
+                  },
+                ),
                 Text(post.autor),
                 Row(
                   children: [
