@@ -11,10 +11,10 @@ class Post {
   String urlFoto2 = '';
   String sigueAhi = '';
   String yaNoEsta = '';
-  List<Comment> comentarios = [];
+  List<dynamic> comentarios = [];
   DateTime fechaPublicacion = DateTime.now();
 
-  Map<String, dynamic?> toMap() {
+  Map<String, dynamic> toMap() {
     var map = <String, dynamic?>{
       'id': id,
       'sector': sector,
@@ -43,10 +43,15 @@ class Post {
   });
 
   Post.fromMap(Map<String, Object?> map) {
-    //id = map['id'] as int;
-    //title = map['title'] as String;
-    //text = map['text'] as String;
-    //username = map['username'] as String;
-    //date = map['date'] as DateTime;
+    id = map['id'] as int;
+    sector = map['sector'] as String;
+    descripcion = map['descripcion'] as String;
+    autor = map['autor'] as String;
+    urlFoto1 = map['urlFoto1'] as String;
+    urlFoto1 = map['urlFoto1'] as String;
+    sigueAhi = map['sigueAhi'] as String;
+    yaNoEsta = map['yaNoEsta'] as String;
+    comentarios = map['comentarios'] as List<dynamic>;
+    fechaPublicacion = map['fechaPublicacion'] as DateTime;
   }
 }

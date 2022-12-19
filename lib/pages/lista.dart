@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:denuncia_wakala/models/post.dart';
 import 'package:denuncia_wakala/pages/crear_publicacion.dart';
+import 'package:denuncia_wakala/pages/detalles.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -53,7 +55,8 @@ class _ListaState extends State<Lista> {
                       "By ${snapshot.data![index]['autor']} At ${snapshot.data![index]['fecha']}"),
                   isThreeLine: true,
                   leading: Text(snapshot.data![index]['id'].toString()),
-                  onTap: () => navigateToPost(context, snapshot.data![index]),
+                  onTap: () =>
+                      navigateToPost(context, snapshot.data![index]['id']),
                 );
               },
             );
@@ -78,14 +81,26 @@ void navigateToPost(BuildContext context, int idPost) async {
   await http
       .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwuakala/$idPost'))
       .then((http.Response response) {
-    //post = jsonDecode(response.body);
-    //Navigator.push(
-    //  context,
-    //  MaterialPageRoute(builder: (context) => Detalles(post: post)),
-    //);
     post = jsonDecode(response.body);
-    //Navigator.push(
-    //    context, MaterialPageRoute(builder: (context) => Detalles()));
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Detalles(
+          post: Post(
+            id: post['id'],
+            sector: post['sector'],
+            descripcion: post['descripcion'],
+            autor: post['autor'],
+            urlFoto1: post['url_foto1'],
+            urlFoto2: post['url_foto2'],
+            sigueAhi: post['sigue_ahi'].toString(),
+            yaNoEsta: post['ya_no_esta'].toString(),
+            comentarios: post['comentarios'],
+          ),
+        ),
+      ),
+    );
   });
 }
 
