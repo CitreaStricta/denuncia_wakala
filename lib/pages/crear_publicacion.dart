@@ -161,6 +161,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                               descripcionTextController.text,
                               pathImage1,
                               pathImage2);
+                          Navigator.pop(context);
                         });
                       },
                       // asegurarse de que:

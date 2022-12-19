@@ -16,7 +16,7 @@ class Lista extends StatefulWidget {
 class _ListaState extends State<Lista> {
   Future<List<dynamic>> getPosts() async {
     return jsonDecode((await http
-            .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwakalas')))
+            .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwuakalas')))
         .body);
   }
 
@@ -36,7 +36,7 @@ class _ListaState extends State<Lista> {
             ),
           );
         },
-        tooltip: "Crear nota",
+        tooltip: "Denunciar wuakala",
         child: const Icon(Icons.add_rounded),
       ),
       body: FutureBuilder<List<dynamic>>(
@@ -54,16 +54,12 @@ class _ListaState extends State<Lista> {
                   isThreeLine: true,
                   leading: Text(snapshot.data![index]['id'].toString()),
                   onTap: () => navigateToPost(context, snapshot.data![index]),
-                  trailing: IconButton(
-                    alignment: Alignment.center,
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async {
-                      deletePost(snapshot.data![index]['id']);
-                      // setState(() {});
-                    },
-                  ),
                 );
               },
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
             return const Center(
@@ -78,19 +74,22 @@ class _ListaState extends State<Lista> {
 }
 
 void navigateToPost(BuildContext context, int idPost) async {
-  //dynamic post;
+  dynamic post;
   await http
-      .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwakala/$idPost'))
+      .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwuakala/$idPost'))
       .then((http.Response response) {
     //post = jsonDecode(response.body);
     //Navigator.push(
     //  context,
     //  MaterialPageRoute(builder: (context) => Detalles(post: post)),
     //);
+    post = jsonDecode(response.body);
+    //Navigator.push(
+    //    context, MaterialPageRoute(builder: (context) => Detalles()));
   });
 }
 
 void deletePost(int idPost) async {
   await http.delete(
-      Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Deletewakalas/$idPost'));
+      Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Deletewuakalas/$idPost'));
 }
