@@ -84,14 +84,14 @@ void navigateToPost(BuildContext context, int idPost) async {
       MaterialPageRoute(
         builder: (context) => Detalles(
           post: Post(
-            id: post['id'],
-            sector: post['sector'],
-            descripcion: post['descripcion'],
-            autor: post['autor'],
-            urlFoto1: post['url_foto1'],
-            urlFoto2: post['url_foto2'],
-            sigueAhi: post['sigue_ahi'].toString(),
-            yaNoEsta: post['ya_no_esta'].toString(),
+            id: post['id'] ?? '',
+            sector: post['sector'] ?? '',
+            descripcion: post['descripcion'] ?? '',
+            autor: post['autor'] ?? '',
+            urlFoto1: post['url_foto1'] ?? '',
+            urlFoto2: post['url_foto2'] ?? '',
+            sigueAhi: post['sigue_ahi'].toString() ?? '',
+            yaNoEsta: post['ya_no_esta'].toString() ?? '',
             comentarios: post['comentarios'],
           ),
         ),

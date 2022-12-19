@@ -36,6 +36,7 @@ class _DetallesState extends State<Detalles> {
   }
 
   Widget imageShower(context, String fotoURL) {
+    if (fotoURL.isEmpty) return Container();
     return GestureDetector(
       onTap: () {
         showImageViewer(context,
@@ -49,119 +50,225 @@ class _DetallesState extends State<Detalles> {
         child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
       ),
     );
-
-    // return GestureDetector(
-    //     onTap: (() => {
-    //           Navigator.push(
-    //             context,
-    //             MaterialPageRoute(
-    //               builder: (context) => const ImageViewer(),
-    //             ),
-    //           ),
-    //         }),
-    //     child: Container(
-    //       width: 150,
-    //       height: 400,
-    //       padding: const EdgeInsets.symmetric(vertical: 16.0),
-    //       child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
-    //     ));
   }
+
+  Widget imagesShower(context) {
+    List<Widget> data = [const Spacer()];
+    if (post.urlFoto1.isNotEmpty) {
+      data.add(
+        GestureDetector(
+          onTap: () {
+            showImageViewer(
+                context,
+                Image.network('${Global.baseApiUrl}/images/${post.urlFoto1}')
+                    .image,
+                swipeDismissible: false);
+          },
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.4,
+              maxHeight: MediaQuery.of(context).size.height * 0.4,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Image.network(
+                '${Global.baseApiUrl}/images/${post.urlFoto1}',
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      data.add(const Spacer());
+    }
+    if (post.urlFoto2.isNotEmpty) {
+      data.add(
+        GestureDetector(
+          onTap: () {
+            showImageViewer(
+                context,
+                Image.network('${Global.baseApiUrl}/images/${post.urlFoto2}')
+                    .image,
+                swipeDismissible: false);
+          },
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.4,
+              maxHeight: MediaQuery.of(context).size.height * 0.4,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Image.network(
+                '${Global.baseApiUrl}/images/${post.urlFoto2}',
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      data.add(const Spacer());
+    }
+    return Row(
+      children: data,
+    );
+  }
+
+  // return GestureDetector(
+  //     onTap: (() => {
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => const ImageViewer(),
+  //             ),
+  //           ),
+  //         }),
+  //     child: Container(
+  //       width: 150,
+  //       height: 400,
+  //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+  //       child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
+  //     ));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: SizedBox(
+        width: double.infinity,
+        height: 80,
+        child: Column(children: const [
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30))),
+              hintText: "Comentar",
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ]),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           // este container si es innecesario (prueba)
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // parsear el sectro aqui con los datos de la api
-                Text(post.sector),
-                // parsear LA DESCRIPCION aqui con los datos de la api
-                Text(post.descripcion),
-                // AQUI LAS DOS IMAGENES QUE SE DEBEN PODER VER Y PODER CLIQUEAR\
-                Row(children: [
-                  const Spacer(),
-                  imageShower(context, post.urlFoto1),
-                  const Spacer(),
-                  imageShower(context, post.urlFoto2),
-                  const Spacer(),
-                ]),
-                Text(post.autor),
-                Row(
-                  children: [
-                    // boton para "sigue ahi"
-                    const Spacer(),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(150, 60),
-                      ),
-                      onPressed: () {
-                        // que aumente el conteo de "Sigue ahi (x)"
-                      },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // parsear el SECTOR aqui con los datos de la api
+              Text(
+                post.sector,
+                textScaleFactor: 2.0,
+              ),
+              const SizedBox(height: 10),
 
-                      /* debe incluir el numero de botos que tiene*/
-                      child: const Text("Sigue ahi"),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(150, 60),
-                      ),
-                      onPressed: () {
-                        // que aumente el conteo de "Ya no esta (x)"
-                      },
+              // parsear LA DESCRIPCION aqui con los datos de la api
+              Text(
+                post.descripcion,
+                textScaleFactor: 1.2,
+              ),
+              const SizedBox(height: 10),
 
-                      /* debe incluir el numero de botos que tiene*/
-                      child: const Text("Sigue ahi (x)"),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text("Comentarios"),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(10, 60),
-                      ),
-                      onPressed: () {
-                        // que nos lleve a la creacion de comentario
-                      },
+              // AQUI LAS DOS IMAGENES QUE SE DEBEN PODER VER Y PODER CLIQUEAR\
+              imagesShower(context),
+              const SizedBox(height: 10),
 
-                      /* debe incluir el numero de botos que tiene*/
-                      child: const Text("Comentar"),
+              // parsear AUTOR aqui con los datos de la api
+              Text(
+                post.autor,
+                textScaleFactor: 1.2,
+              ),
+              const SizedBox(height: 10),
+
+              // Botones para decir si sigue ahi o si no sigue ahí
+              Row(
+                children: [
+                  // boton para "sigue ahi"
+                  const Spacer(),
+                  const Spacer(),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      minimumSize:
+                          Size(MediaQuery.of(context).size.width * 0.3, 60),
                     ),
-                  ],
-                ),
-                //Row(
-                //   children: const [
-                //  aqui va a ser mas webeado.
-                // Hay que hacer un "for" que nos
-                // devuelve todos los comentarios
-                //  que se han hecho en este wuakala
-                //   ],
-                // ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    minimumSize: const Size(10, 60),
+                    onPressed: () {
+                      // que aumente el conteo de "Sigue ahi (x)"
+                    },
+
+                    /* debe incluir el numero de botos que tiene*/
+                    child: const Text("Sigue ahi"),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  const Spacer(),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      minimumSize:
+                          Size(MediaQuery.of(context).size.width * 0.3, 60),
+                    ),
+                    onPressed: () {
+                      // que aumente el conteo de "Ya no esta (x)"
+                    },
 
-                  /* debe incluir el numero de botos que tiene*/
-                  child: const Text("Volver al Listado"),
+                    /* debe incluir el numero de botos que tiene*/
+                    child: const Text("Sigue ahi (x)"),
+                  ),
+                  const Spacer(),
+                  const Spacer(),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Text("Comentarios"),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      minimumSize: const Size(10, 60),
+                    ),
+                    onPressed: () {
+                      // que nos lleve a la creacion de comentario
+                    },
+
+                    /* debe incluir el numero de botos que tiene*/
+                    child: const Text("Comentar"),
+                  ),
+                ],
+              ),
+              //Row(
+              //   children: const [
+              //  aqui va a ser mas webeado.
+              // Hay que hacer un "for" que nos
+              // devuelve todos los comentarios
+              //  que se han hecho en este wuakala
+              //   ],
+              // ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  minimumSize: const Size(10, 60),
                 ),
-              ],
-            ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+
+                /* debe incluir el numero de botos que tiene*/
+                child: const Text("Volver al Listado"),
+              ),
+            ],
           ),
         ),
       ),
