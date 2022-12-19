@@ -66,10 +66,11 @@ class _DetallesState extends State<Detalles> {
                 Row(
                   children: [
                     // boton para "sigue ahi"
+                    const Spacer(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           shape: const StadiumBorder(),
-                          minimumSize: const Size(10, 60)),
+                          minimumSize: const Size(150, 60)),
                       onPressed: () {
                         // que aumente el conteo de "Sigue ahi (x)"
                       },
@@ -77,10 +78,11 @@ class _DetallesState extends State<Detalles> {
                       /* debe incluir el numero de botos que tiene*/
                       child: const Text("Sigue ahi"),
                     ),
+                    const Spacer(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           shape: const StadiumBorder(),
-                          minimumSize: const Size(10, 60)),
+                          minimumSize: const Size(150, 60)),
                       onPressed: () {
                         // que aumente el conteo de "Ya no esta (x)"
                       },
@@ -88,6 +90,7 @@ class _DetallesState extends State<Detalles> {
                       /* debe incluir el numero de botos que tiene*/
                       child: const Text("Sigue ahi (x)"),
                     ),
+                    const Spacer(),
                   ],
                 ),
                 Row(
