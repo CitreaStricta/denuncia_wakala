@@ -220,7 +220,7 @@ class _DetallesState extends State<Detalles> {
                     },
 
                     /* debe incluir el numero de botos que tiene*/
-                    child: const Text("Sigue ahi (x)"),
+                    child: const Text("No sigue ahi "),
                   ),
                   const Spacer(),
                   const Spacer(),
