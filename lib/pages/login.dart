@@ -24,14 +24,12 @@ class _LoginState extends State<Login> {
   Future<void> intentarLogin(String user, String password) async {
     final response = await LoginService().validar(user, password);
 
-    print(response.statusCode);
     if (response.statusCode == 200) {
       //almacenar de alguna manera el login
       //await pref.setString('Usuario', user);
       Global.localUsername = user;
       final dynamic data = jsonDecode(response.body);
       Global.localId = data["id"];
-      print(Global.localId);
       if (!mounted) return;
       Navigator.push(
         context,

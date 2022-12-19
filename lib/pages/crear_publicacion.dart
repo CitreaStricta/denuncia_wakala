@@ -19,8 +19,8 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   final sectorTextController = TextEditingController();
   final descripcionTextController = TextEditingController();
   final imagePicker = ImagePicker();
-  late File? _image1 = null;
-  late File? _image2 = null;
+  late File? _image1;
+  late File? _image2;
   String pathImage1 = '';
   String pathImage2 = '';
 
@@ -45,7 +45,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   Future<http.Response> crearMensaje(String sector, String descripcion,
       String rutaImg1, String rutaImg2) async {
     return await http.post(
-      Uri.parse("${Global.baseApiUrl}/api/wakalasApi/Postwakalas"),
+      Uri.parse("${Global.baseApiUrl}/api/wuakalasApi/Postwuakalas"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -69,7 +69,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // texto de mas arriba
-                  const Text("Denuncia de wakala"),
+                  const Text("Denuncia de wuakala"),
                   // burbuja de texto para el sector donde fue el avistamiento
                   TextField(
                     controller: sectorTextController,

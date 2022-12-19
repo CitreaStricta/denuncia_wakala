@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:denuncia_wakala/models/post.dart';
 import 'package:denuncia_wakala/pages/image_Viewer.dart';
 import 'package:denuncia_wakala/utils/utiles.dart';
@@ -20,21 +18,20 @@ class Detalles extends StatefulWidget {
 
 class _DetallesState extends State<Detalles> {
   Post post;
-  late File? imagen1;
-  late File? imagen2;
 
   _DetallesState(this.post);
 
   Future<String> getImage(String imagenB64) async {
     return (await http.post(Uri.parse(
-            "${Global.baseApiUrl}/api/wakalasApi/toImagen?base64=$imagenB64")))
+            "${Global.baseApiUrl}/api/wuakalasApi/toImagen?base64=$imagenB64")))
         .body;
   }
 
-  Future<List<Image>> queryImages() async {
-    List<Image> imageList = [];
-    
-    return 
+  Future<List<String>> queryImages(context) async {
+    return [
+      await getImage(post.urlFoto1),
+      await getImage(post.urlFoto2),
+    ];
   }
 
   Future<Widget> imageShower(context, String imagen) async {
@@ -70,13 +67,19 @@ class _DetallesState extends State<Detalles> {
                 // parsear LA DESCRIPCION aqui con los datos de la api
                 Text(post.descripcion),
                 // AQUI LAS DOS IMAGENES QUE SE DEBEN PODER VER Y PODER CLIQUEAR\
-                FutureBuilder(
-                  future: queryImages(),
-                  initialData: InitialData,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return ;
-                  },
-                ),
+                Row(children: [
+                  Image.network(
+                    '${Global.baseApiUrl}/images/${post.urlFoto1}',
+                    width: 150,
+                    height: 400,
+                  ),
+                  Image.network(
+                    '${Global.baseApiUrl}/images/${post.urlFoto2}',
+                    width: 150,
+                    height: 400,
+                  ),
+                  //Image.network(snapshot.data![1]),
+                ]),
                 Text(post.autor),
                 Row(
                   children: [
@@ -84,8 +87,9 @@ class _DetallesState extends State<Detalles> {
                     const Spacer(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          minimumSize: const Size(150, 60)),
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(150, 60),
+                      ),
                       onPressed: () {
                         // que aumente el conteo de "Sigue ahi (x)"
                       },
@@ -96,8 +100,9 @@ class _DetallesState extends State<Detalles> {
                     const Spacer(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          minimumSize: const Size(150, 60)),
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(150, 60),
+                      ),
                       onPressed: () {
                         // que aumente el conteo de "Ya no esta (x)"
                       },
@@ -113,8 +118,9 @@ class _DetallesState extends State<Detalles> {
                     const Text("Comentarios"),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          minimumSize: const Size(10, 60)),
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(10, 60),
+                      ),
                       onPressed: () {
                         // que nos lleve a la creacion de comentario
                       },
@@ -134,8 +140,9 @@ class _DetallesState extends State<Detalles> {
                 //),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      minimumSize: const Size(10, 60)),
+                    shape: const StadiumBorder(),
+                    minimumSize: const Size(10, 60),
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                   },
