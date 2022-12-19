@@ -141,6 +141,10 @@ class _DetallesState extends State<Detalles> {
   //       child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
   //     ));
 
+  Widget comentario(index) {
+    return ListTile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,14 +251,16 @@ class _DetallesState extends State<Detalles> {
                   ),
                 ],
               ),
-              //Row(
-              //   children: const [
-              //  aqui va a ser mas webeado.
-              // Hay que hacer un "for" que nos
-              // devuelve todos los comentarios
-              //  que se han hecho en este wuakala
-              //   ],
-              // ),
+              // aqui poner los comentarios
+              ListView.builder(
+                itemCount: post.comentarios.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return comentario(index);
+                },
+              ),
+
+              // aqui poner los comentarios
+
               const SizedBox(height: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
