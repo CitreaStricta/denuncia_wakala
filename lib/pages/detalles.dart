@@ -1,3 +1,4 @@
+import 'package:denuncia_wakala/main.dart';
 import 'package:denuncia_wakala/models/post.dart';
 import 'package:denuncia_wakala/pages/image_Viewer.dart';
 import 'package:denuncia_wakala/utils/utiles.dart';
@@ -21,36 +22,6 @@ class _DetallesState extends State<Detalles> {
   Post post;
 
   _DetallesState(this.post);
-
-  Future<String> getImage(String imagenB64) async {
-    return (await http.post(Uri.parse(
-            "${Global.baseApiUrl}/api/wuakalasApi/toImagen?base64=$imagenB64")))
-        .body;
-  }
-
-  Future<List<String>> queryImages(context) async {
-    return [
-      await getImage(post.urlFoto1),
-      await getImage(post.urlFoto2),
-    ];
-  }
-
-  Widget imageShower(context, String fotoURL) {
-    if (fotoURL.isEmpty) return Container();
-    return GestureDetector(
-      onTap: () {
-        showImageViewer(context,
-            Image.network('${Global.baseApiUrl}/images/$fotoURL').image,
-            swipeDismissible: false);
-      },
-      child: Container(
-        width: 150,
-        height: 400,
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
-      ),
-    );
-  }
 
   Widget imagesShower(context) {
     List<Widget> data = [const Spacer()];
@@ -145,20 +116,41 @@ class _DetallesState extends State<Detalles> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomSheet: SizedBox(
-        width: double.infinity,
-        height: 80,
-        child: Column(children: const [
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              hintText: "Comentar",
+        width: MediaQuery.of(context).size.width - 10,
+        height: 70,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 10),
+                const Flexible(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      hintText: "Comentar",
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    minimumSize: const Size(10, 60),
+                  ),
+                  onPressed: () {
+                    // que nos lleve a la creacion de comentario
+                  },
+                  child: const Text("Publicar"),
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ]),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -167,6 +159,20 @@ class _DetallesState extends State<Detalles> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  minimumSize: const Size(60, 60),
+                  maximumSize: const Size(60, 60),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(
+                  Icons.arrow_left_rounded,
+                  size: 70,
+                ),
+              ),
               // parsear el SECTOR aqui con los datos de la api
               Text(
                 post.sector,
@@ -255,19 +261,6 @@ class _DetallesState extends State<Detalles> {
               //  que se han hecho en este wuakala
               //   ],
               // ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  minimumSize: const Size(10, 60),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-
-                /* debe incluir el numero de botos que tiene*/
-                child: const Text("Volver al Listado"),
-              ),
             ],
           ),
         ),
