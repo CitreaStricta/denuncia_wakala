@@ -113,6 +113,13 @@ class _DetallesState extends State<Detalles> {
     );
   }
 
+  Widget comentario(index) {
+    return ListTile(
+      title: Text(post.comentarios[index]['descripcion']),
+      subtitle: Text(post.comentarios[index]['autor']),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,7 +242,7 @@ class _DetallesState extends State<Detalles> {
                     },
 
                     /* debe incluir el numero de botos que tiene*/
-                    child: const Text("Sigue ahi (x)"),
+                    child: const Text("No sigue ahi "),
                   ),
                   const Spacer(),
                   const Spacer(),
@@ -259,14 +266,38 @@ class _DetallesState extends State<Detalles> {
                   ),
                 ],
               ),
-              //Row(
-              //   children: const [
-              //  aqui va a ser mas webeado.
-              // Hay que hacer un "for" que nos
-              // devuelve todos los comentarios
-              //  que se han hecho en este wuakala
-              //   ],
-              // ),
+
+              // aqui poner los comentarios
+              Flexible(
+                  child: ListView.separated(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: post.comentarios.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(
+                    height: 6,
+                  );
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  return comentario(index);
+                },
+              )),
+
+              // aqui poner los comentarios
+
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  minimumSize: const Size(10, 60),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+
+                /* debe incluir el numero de botos que tiene*/
+                child: const Text("Volver al Listado"),
+              ),
             ],
           ),
         ),
