@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../global.dart';
-import '../models/post.dart';
 
 class Lista extends StatefulWidget {
   const Lista({Key? key}) : super(key: key);
@@ -16,13 +15,9 @@ class Lista extends StatefulWidget {
 
 class _ListaState extends State<Lista> {
   Future<List<dynamic>> getPosts() async {
-    List<dynamic> data = [];
-    await http
-        .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwakalas'))
-        .then((http.Response response) {
-      data = jsonDecode(response.body);
-    });
-    return data;
+    return jsonDecode((await http
+            .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwakalas')))
+        .body);
   }
 
   @override
@@ -48,7 +43,7 @@ class _ListaState extends State<Lista> {
         future: getPosts(),
         builder: (context, snapshot) {
           //snapshot.data es la List<dynamic>
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(
               itemCount: snapshot.data?.length,
               itemBuilder: (BuildContext context, int index) {
@@ -83,15 +78,15 @@ class _ListaState extends State<Lista> {
 }
 
 void navigateToPost(BuildContext context, int idPost) async {
-  dynamic post;
+  //dynamic post;
   await http
       .get(Uri.parse('${Global.baseApiUrl}/api/wuakalasApi/Getwakala/$idPost'))
       .then((http.Response response) {
-    post = jsonDecode(response.body);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Detalles(post: post)),
-    );
+    //post = jsonDecode(response.body);
+    //Navigator.push(
+    //  context,
+    //  MaterialPageRoute(builder: (context) => Detalles(post: post)),
+    //);
   });
 }
 
