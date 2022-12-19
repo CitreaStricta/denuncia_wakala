@@ -96,24 +96,11 @@ class _DetallesState extends State<Detalles> {
     );
   }
 
-  // return GestureDetector(
-  //     onTap: (() => {
-  //           Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //               builder: (context) => const ImageViewer(),
-  //             ),
-  //           ),
-  //         }),
-  //     child: Container(
-  //       width: 150,
-  //       height: 400,
-  //       padding: const EdgeInsets.symmetric(vertical: 16.0),
-  //       child: Image.network('${Global.baseApiUrl}/images/$fotoURL'),
-  //     ));
-
   Widget comentario(index) {
-    return ListTile();
+    return ListTile(
+      title: Text(post.comentarios[index]['descripcion']),
+      subtitle: Text(post.comentarios[index]['autor']),
+    );
   }
 
   @override
@@ -257,13 +244,22 @@ class _DetallesState extends State<Detalles> {
                   ),
                 ],
               ),
+
               // aqui poner los comentarios
-              ListView.builder(
+              Flexible(
+                  child: ListView.separated(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
                 itemCount: post.comentarios.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(
+                    height: 6,
+                  );
+                },
                 itemBuilder: (BuildContext context, int index) {
                   return comentario(index);
                 },
-              ),
+              )),
 
               // aqui poner los comentarios
 
