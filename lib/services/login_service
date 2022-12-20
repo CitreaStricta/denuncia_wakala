@@ -21,7 +21,7 @@ class LoginService {
       },
       body: <String, dynamic>{
         'email': email,
-        // 'nombre': nombre,
+        'nombre': nombre,
         'pass': password,
       }
     );

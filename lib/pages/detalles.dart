@@ -6,6 +6,7 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../global.dart';
+import 'dart:convert';
 
 class Detalles extends StatefulWidget {
   // static const routeName = '/detailTodoScreen';
@@ -21,7 +22,23 @@ class Detalles extends StatefulWidget {
 class _DetallesState extends State<Detalles> {
   Post post;
 
+  TextEditingController commentController = TextEditingController();
+
   _DetallesState(this.post);
+
+  void postearComentario(int wid, String comentario, int uid) async {
+    await http.post(
+      Uri.parse('${Global.baseApiUrl}/api/comentariosApi/Postcomentario'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id_wuakala': wid.toString(),
+        'descripcion': comentario,
+        'id_autor': uid.toString(),
+      }),
+    );
+  }
 
   Widget imagesShower(context) {
     List<Widget> data = [const Spacer()];
@@ -115,9 +132,10 @@ class _DetallesState extends State<Detalles> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(width: 10),
-                const Flexible(
+                Flexible(
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: commentController,
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(30))),
                       hintText: "Comentar",
@@ -131,7 +149,11 @@ class _DetallesState extends State<Detalles> {
                     minimumSize: const Size(10, 60),
                   ),
                   onPressed: () {
-                    // que nos lleve a la creacion de comentario
+                    if (commentController.text.isNotEmpty) {
+                      postearComentario(
+                          post.id!, commentController.text, Global.localId);
+                      commentController.text = "";
+                    }
                   },
                   child: const Text("Publicar"),
                 ),
