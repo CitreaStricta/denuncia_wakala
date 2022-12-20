@@ -260,6 +260,7 @@ class _DetallesState extends State<Detalles> {
                       Global.localId,
                     );
                     commentController.text = "";
+                    FocusManager.instance.primaryFocus?.unfocus();
                     Timer(const Duration(seconds: 2), () {
                       setState(() {
                         comentarioPublicado = false;
