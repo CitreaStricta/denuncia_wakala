@@ -219,13 +219,6 @@ class _DetallesState extends State<Detalles> {
     );
   }
 
-  double min(double a, double b) {
-    if (a <= b) {
-      return a;
-    }
-    return b;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -234,7 +227,7 @@ class _DetallesState extends State<Detalles> {
         padding: EdgeInsets.only(
             left: 10.0,
             right: 10.0,
-            bottom: min(MediaQuery.of(context).viewInsets.bottom, 40.0) + 10),
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10),
         child: SizedBox(
           width: MediaQuery.of(context).size.width - 10,
           height: 60,
@@ -429,11 +422,12 @@ class _DetallesState extends State<Detalles> {
                 ),
               ),
 
+              // aviso de comentario publicado en letra azul
               checkComentarioPublicado(),
 
               const SizedBox(height: 10),
-              // aqui poner los comentarios
 
+              // aqui poner los comentarios
               Flexible(
                 fit: FlexFit.tight,
                 child: ClipRRect(
