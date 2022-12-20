@@ -1,3 +1,4 @@
+import 'package:denuncia_wakala/pages/lista_publicaciones.dart';
 import 'package:flutter/material.dart';
 import 'package:denuncia_wakala/pages/login.dart';
 
