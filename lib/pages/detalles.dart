@@ -223,6 +223,51 @@ class _DetallesState extends State<Detalles> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      bottomSheet: SizedBox(
+        width: MediaQuery.of(context).size.width - 10,
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: TextField(
+                controller: commentController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                  hintText: "Comentar",
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                minimumSize: const Size(100, 60),
+              ),
+              onPressed: () {
+                if (commentController.text.isNotEmpty) {
+                  comentarioPublicado = true;
+                  setState(() {});
+                  postearComentario(
+                    post.id!,
+                    commentController.text,
+                    Global.localId,
+                  );
+                  commentController.text = "";
+                  Timer(const Duration(seconds: 2), () {
+                    setState(() {
+                      comentarioPublicado = false;
+                      setState(() {});
+                    });
+                  });
+                }
+              },
+              child: const Text("Publicar"),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -388,51 +433,8 @@ class _DetallesState extends State<Detalles> {
 
               // Text Field de comentario y boton para publicar
               const SizedBox(height: 10),
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 10,
+              const SizedBox(
                 height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: commentController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          hintText: "Comentar",
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(100, 60),
-                      ),
-                      onPressed: () {
-                        if (commentController.text.isNotEmpty) {
-                          comentarioPublicado = true;
-                          setState(() {});
-                          postearComentario(
-                            post.id!,
-                            commentController.text,
-                            Global.localId,
-                          );
-                          commentController.text = "";
-                          Timer(const Duration(seconds: 2), () {
-                            setState(() {
-                              comentarioPublicado = false;
-                              setState(() {});
-                            });
-                          });
-                        }
-                      },
-                      child: const Text("Publicar"),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
