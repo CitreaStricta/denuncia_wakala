@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cool_alert/cool_alert.dart';
 import 'package:denuncia_wakala/utils/utiles.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -32,10 +33,16 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     setState(() {
       try {
         if (imageNumber == 1) {
-          if (_image1 != null) _image1 = null;
+          if (_image1 != null) {
+            showImageViewer(context, Image.file(_image1!).image,
+                swipeDismissible: false);
+          }
           _image1 ??= File(image!.path);
         } else {
-          if (_image2 != null) _image2 = null;
+          if (_image2 != null) {
+            showImageViewer(context, Image.file(_image1!).image,
+                swipeDismissible: false);
+          }
           _image2 ??= File(image!.path);
         }
       } catch (e) {
@@ -192,7 +199,6 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                           setState(() {
                             if (_image1 != null) pathImage1 = _image1!.path;
                             if (_image2 != null) pathImage2 = _image2!.path;
-                            print("llegaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                             _futureMensaje = crearMensaje(
                                 sectorTextController.text,
                                 descripcionTextController.text,
