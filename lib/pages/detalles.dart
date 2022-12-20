@@ -220,7 +220,7 @@ class _DetallesState extends State<Detalles> {
   }
 
   double min(double a, double b) {
-    if (a <= b) {
+    if (a >= b) {
       return a;
     }
     return b;
