@@ -80,11 +80,19 @@ class _DetallesState extends State<Detalles> {
       data.add(
         GestureDetector(
           onTap: () {
-            showImageViewer(
-                context,
-                Image.network('${Global.baseApiUrl}/images/${post.urlFoto1}')
-                    .image,
-                swipeDismissible: false);
+            bool working = true;
+            Widget postImage = Image.network(
+              '${Global.baseApiUrl}/images/${post.urlFoto1}',
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                working = false;
+                return const Text("Error");
+              },
+            );
+            if (working) {
+              showImageViewer(context, (postImage as Image).image,
+                  swipeDismissible: false);
+            }
           },
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -95,6 +103,10 @@ class _DetallesState extends State<Detalles> {
               borderRadius: BorderRadius.circular(16.0),
               child: Image.network(
                 '${Global.baseApiUrl}/images/${post.urlFoto1}',
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return const Text("Error");
+                },
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
@@ -128,6 +140,10 @@ class _DetallesState extends State<Detalles> {
               borderRadius: BorderRadius.circular(16.0),
               child: Image.network(
                 '${Global.baseApiUrl}/images/${post.urlFoto2}',
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return const Text("Error");
+                },
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
@@ -153,7 +169,7 @@ class _DetallesState extends State<Detalles> {
           ? const EdgeInsets.all(6.0)
           : const EdgeInsets.only(top: 6.0, left: 6.0, right: 6.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(12.0),
         child: Container(
           color: const Color.fromARGB(255, 250, 250, 250),
           child: ListTile(
