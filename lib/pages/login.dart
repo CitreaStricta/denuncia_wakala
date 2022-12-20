@@ -71,6 +71,7 @@ class _LoginState extends State<Login> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Spacer(),
               const Text(
                 "Inicia sesión",
                 textScaleFactor: 1.2,
@@ -173,7 +174,40 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-              )
+              ),
+              Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Spacer(),
+                  Column(
+                    children: const [
+                      Text(
+                        "Por: ",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Vicente 'Chulz' Schultz",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        "Nicolas 'Zso' Rojas",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer()
+                ],
+              ),
+              Spacer()
             ],
           ),
         ),

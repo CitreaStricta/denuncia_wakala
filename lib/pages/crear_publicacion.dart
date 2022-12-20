@@ -19,8 +19,8 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   final sectorTextController = TextEditingController();
   final descripcionTextController = TextEditingController();
   final imagePicker = ImagePicker();
-  late File? _image1;
-  late File? _image2;
+  late File? _image1 = null;
+  late File? _image2 = null;
   String pathImage1 = '';
   String pathImage2 = '';
 
@@ -32,8 +32,10 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     setState(() {
       try {
         if (imageNumber == 1) {
+          if (_image1 != null) _image1 = null;
           _image1 ??= File(image!.path);
         } else {
+          if (_image2 != null) _image2 = null;
           _image2 ??= File(image!.path);
         }
       } catch (e) {
@@ -92,32 +94,67 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                     ),
                     maxLines: 5,
                   ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => {getImage(1)},
-                        child: Container(
-                          width: 176,
-                          height: 176,
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: _image1 == null
-                              ? Image.asset('assets/images/noimage.png')
-                              : Image.file(_image1!),
+
+                  Row(children: [
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () => {getImage(1)},
+                          child: Container(
+                            width: 176,
+                            height: 176,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: _image1 == null
+                                ? Image.asset('assets/images/noimage.png')
+                                : Image.file(_image1!),
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => {getImage(2)},
-                        child: Container(
-                          width: 176,
-                          height: 176,
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: _image2 == null
-                              ? Image.asset('assets/images/noimage.png')
-                              : Image.file(_image2!),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              minimumSize: Size(
+                                  MediaQuery.of(context).size.width * 0.3, 60),
+                            ),
+                            onPressed: () {
+                              // volver a donde estabamos
+                              _image1 = null;
+                              Image.asset('assets/images/noimage.png');
+
+                              setState(() {});
+                            },
+                            child: const Text("Borrar")),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () => {getImage(2)},
+                          child: Container(
+                            width: 176,
+                            height: 176,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: _image2 == null
+                                ? Image.asset('assets/images/noimage.png')
+                                : Image.file(_image2!),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              minimumSize: Size(
+                                  MediaQuery.of(context).size.width * 0.3, 60),
+                            ),
+                            onPressed: () {
+                              // volver a donde estabamos
+                              _image2 = null;
+                              Image.asset('assets/images/noimage.png');
+
+                              setState(() {});
+                            },
+                            child: const Text("Borrar")),
+                      ],
+                    ),
+                  ]),
                   // boton para "post"ear mensajes
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -148,21 +185,22 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                             text: 'Ingresa al menos una imagen',
                             loopAnimation: false,
                           );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
+                          );
+                          setState(() {
+                            if (_image1 != null) pathImage1 = _image1!.path;
+                            if (_image2 != null) pathImage2 = _image2!.path;
+                            print("llegaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                            _futureMensaje = crearMensaje(
+                                sectorTextController.text,
+                                descripcionTextController.text,
+                                pathImage1,
+                                pathImage2);
+                            Navigator.pop(context);
+                          });
                         }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                        setState(() {
-                          if (_image1 != null) pathImage1 = _image1!.path;
-                          if (_image2 != null) pathImage2 = _image2!.path;
-
-                          _futureMensaje = crearMensaje(
-                              sectorTextController.text,
-                              descripcionTextController.text,
-                              pathImage1,
-                              pathImage2);
-                          Navigator.pop(context);
-                        });
                       },
                       // asegurarse de que:
                       // las fotos se deben enviar en base643
