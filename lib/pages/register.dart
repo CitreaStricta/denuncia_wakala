@@ -19,18 +19,55 @@ class _RegisterState extends State<Register> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmController = TextEditingController();
 
+  bool errorUser = false;
+  bool errorEmail = false;
+  bool errorPass = false;
+  int errorPassConfirm = 0;
+
   Future<void> registrarDatos(
       String email, String nombre, String password) async {
     final response = await LoginService().registrar(email, nombre, password);
-    print(response.statusCode);
 
+    print(response.statusCode);
     if (!mounted) return;
-    if (response.statusCode == 200) {
-      //almacenar de alguna manera el login
-      Global.localUsername = nombre;
+    if (response.statusCode == 201) {
+      Global.localUsername = email;
       Navigator.pop(context);
+    }
+  }
+
+  Widget getPasswordConfirmTextField() {
+    if (errorPassConfirm == 0) {
+      return TextField(
+        controller: passwordConfirmController,
+        obscureText: true,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Confirme su password",
+          labelText: "Confirmar password",
+          suffixIcon: const Icon(Icons.lock),
+        ),
+      );
     } else {
-      //text: 'Ese user ya está registrado',
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorPassConfirm = 0;
+            setState(() {});
+          }
+        },
+        controller: passwordConfirmController,
+        obscureText: true,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Confirme su password",
+          labelText: "Confirmar password",
+          errorText: errorPassConfirm == 1
+              ? "Confirma tu password"
+              : "Las passwords deben coincidir",
+          suffixIcon: const Icon(Icons.lock),
+        ),
+      );
     }
   }
 
@@ -52,12 +89,22 @@ class _RegisterState extends State<Register> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Spacer(),
+              const Spacer(),
               const Text(
                 "Crea tu cuenta",
-                textScaleFactor: 1.2,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
               sizedBox(30),
               TextField(
+                onChanged: (text) {
+                  if (text.isNotEmpty) {
+                    errorUser = false;
+                    setState(() {});
+                  }
+                },
                 controller: userController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -65,11 +112,18 @@ class _RegisterState extends State<Register> {
                   ),
                   hintText: "Ingrese su nombre de usuario",
                   labelText: "Usuario",
+                  errorText: errorUser ? "Ingresa un nombre usuario" : null,
                   suffixIcon: const Icon(Icons.person),
                 ),
               ),
               sizedBox(10),
               TextField(
+                onChanged: (text) {
+                  if (text.isNotEmpty) {
+                    errorEmail = false;
+                    setState(() {});
+                  }
+                },
                 controller: emailController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -77,11 +131,18 @@ class _RegisterState extends State<Register> {
                   ),
                   hintText: "Ingrese su email",
                   labelText: "Email",
+                  errorText: errorEmail ? "Ingresa un email" : null,
                   suffixIcon: const Icon(Icons.mail),
                 ),
               ),
               sizedBox(10),
               TextField(
+                onChanged: (text) {
+                  if (text.isNotEmpty) {
+                    errorPass = false;
+                    setState(() {});
+                  }
+                },
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -89,21 +150,12 @@ class _RegisterState extends State<Register> {
                       borderRadius: BorderRadius.circular(40)),
                   hintText: "Ingrese su password",
                   labelText: "Password",
+                  errorText: errorPass ? "Crea una contraseña" : null,
                   suffixIcon: const Icon(Icons.lock),
                 ),
               ),
               sizedBox(10),
-              TextField(
-                controller: passwordConfirmController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                  hintText: "Confirme su password",
-                  labelText: "Confirmar password",
-                  suffixIcon: const Icon(Icons.lock),
-                ),
-              ),
+              getPasswordConfirmTextField(),
               sizedBox(60),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -113,23 +165,35 @@ class _RegisterState extends State<Register> {
                 ),
                 onPressed: () {
                   if (userController.text.isEmpty) {
-                    //text: 'Debes proporcionar un nombre de usuario',
-                  } else if (emailController.text.isEmpty) {
-                    //text: 'Debes proporcionar un email',
-                  } else if (passwordController.text.isEmpty) {
-                    //text: 'Debes proporcionar una password',
-                  } else if (passwordConfirmController.text.isEmpty) {
-                    //text: 'Debes confirmar la password',
-                  } else if (!passwordController.text
-                      .contains(passwordConfirmController.text)) {
-                    //text: 'Las passwords deben coincidir',
-                  } else {
+                    errorUser = true;
+                  }
+                  if (emailController.text.isEmpty) {
+                    errorEmail = true;
+                  }
+                  if (passwordController.text.isEmpty) {
+                    errorPass = true;
+                  }
+                  if (passwordConfirmController.text.isEmpty) {
+                    errorPassConfirm = 1;
+                  }
+                  if (passwordController.text
+                          .compareTo(passwordConfirmController.text) !=
+                      0) {
+                    errorPassConfirm = 2;
+                  }
+                  if (userController.text.isNotEmpty &&
+                      emailController.text.isNotEmpty &&
+                      passwordController.text.isNotEmpty &&
+                      passwordConfirmController.text
+                              .compareTo(passwordController.text) ==
+                          0) {
                     registrarDatos(
                       emailController.text,
                       userController.text,
                       passwordController.text,
                     );
                   }
+                  setState(() {});
                 },
                 child: const Text("Registrarse"),
               ),
@@ -150,7 +214,8 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
-              )
+              ),
+              const Spacer(),
             ],
           ),
         ),

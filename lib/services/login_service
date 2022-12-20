@@ -19,30 +19,11 @@ class LoginService {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: <String, dynamic>{
+      body: jsonEncode(<String, dynamic>{
         'email': email,
         'nombre': nombre,
         'pass': password,
-      }
+      }),
     );
-  }
-
-  Future<void> recovery(String user, dynamic context) async {
-    await http
-        .get(Uri.parse('${Global.baseApiUrl}/api/Usuarios'))
-        .then((http.Response response) {
-      final List<dynamic> data = jsonDecode(response.body);
-      for (var i = 0; i < data.length; i++) {
-        if (data[i]['login'] == user) {
-          //return data[i]['pass'].toString();
-          CoolAlert.show(
-            context: context,
-            type: CoolAlertType.info,
-            text: 'Su password es ${data[i]['pass'].toString()}',
-            loopAnimation: false,
-          );
-        }
-      }
-    });
   }
 }

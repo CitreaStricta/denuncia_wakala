@@ -15,7 +15,7 @@ class Post {
   DateTime fechaPublicacion = DateTime.now();
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic?>{
+    var map = <String, dynamic>{
       'id': id,
       'sector': sector,
       'descripcion': descripcion,

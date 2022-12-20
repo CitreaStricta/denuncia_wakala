@@ -19,6 +19,11 @@ class CrearPublicacion extends StatefulWidget {
 class _CrearPublicacionState extends State<CrearPublicacion> {
   final sectorTextController = TextEditingController();
   final descripcionTextController = TextEditingController();
+
+  bool errorSector = false;
+  int errorDescripcion = 0;
+  bool errorFotos = false;
+
   final imagePicker = ImagePicker();
   late File? _image1 = null;
   late File? _image2 = null;
@@ -28,6 +33,7 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
   Future<http.Response>? _futureMensaje;
 
   Future getImage(int imageNumber) async {
+    errorFotos = false;
     final image = await imagePicker.getImage(
         source: ImageSource.camera, imageQuality: 50);
     setState(() {
@@ -68,6 +74,102 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     );
   }
 
+  Widget getSectorTextField() {
+    if (!errorSector) {
+      return TextField(
+        controller: sectorTextController,
+        decoration: InputDecoration(
+          hintText: "¿Donde ocurrió?",
+          labelText: "Sector",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+      );
+    } else {
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorSector = false;
+            setState(() {});
+          }
+        },
+        controller: sectorTextController,
+        decoration: InputDecoration(
+          hintText: "¿Donde ocurrió?",
+          labelText: "Sector",
+          errorText: "Ingresa el sector del avistamiento",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+      );
+    }
+  }
+
+  Widget getDescripcionTextField() {
+    if (errorDescripcion == 0) {
+      return TextField(
+        controller: descripcionTextController,
+        decoration: InputDecoration(
+          hintText: "Descripción",
+          labelText: "Descripción",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+        maxLines: 5,
+      );
+    } else if (errorDescripcion == 1) {
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorDescripcion = 0;
+            setState(() {});
+          }
+        },
+        controller: descripcionTextController,
+        decoration: InputDecoration(
+          hintText: "Descripción",
+          labelText: "Descripción",
+          errorText: "Ingresa una descripción",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+        maxLines: 5,
+      );
+    } else {
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorDescripcion = 0;
+            setState(() {});
+          }
+        },
+        controller: descripcionTextController,
+        decoration: InputDecoration(
+          hintText: "Descripción",
+          labelText: "Descripción",
+          errorText: "La descripción debe ser de 15 caracteres o más",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+        maxLines: 5,
+      );
+    }
+  }
+
+  Widget getFotoErrorMessage() {
+    if (!errorFotos) {
+      return const SizedBox(height: 36);
+    } else {
+      return Column(
+        children: const [
+          SizedBox(height: 20),
+          Text(
+            'Debes adjuntar al menos una imagen',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,43 +179,65 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // texto de mas arriba
-                  const Text("Denuncia de wuakala"),
-                  // burbuja de texto para el sector donde fue el avistamiento
-                  TextField(
-                    controller: sectorTextController,
-                    decoration: InputDecoration(
-                      hintText: "¿Donde ocurrió?",
-                      labelText: "Sector",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: BackButton(),
+                      ),
+                      // parsear el SECTOR aqui con los datos de la api
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: Center(
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            "Denunciar wuakala",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 54),
+                    ],
                   ),
                   const SizedBox(height: 10),
+
+                  // burbuja de texto para el sector donde fue el avistamiento
+                  getSectorTextField(),
+
+                  const SizedBox(height: 10),
                   // burbuja de texto para la descripcion
-                  TextField(
-                    controller: descripcionTextController,
-                    decoration: InputDecoration(
-                      hintText: "Descripción",
-                      labelText: "Descripción",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                    maxLines: 5,
-                  ),
+                  getDescripcionTextField(),
+
+                  getFotoErrorMessage(),
 
                   Row(children: [
+                    const Spacer(),
+                    const Spacer(),
                     Column(
                       children: [
                         GestureDetector(
                           onTap: () => {getImage(1)},
-                          child: Container(
-                            width: 176,
-                            height: 176,
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: _image1 == null
-                                ? Image.asset('assets/images/noimage.png')
-                                : Image.file(_image1!),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.4,
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.4,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
+                                child: _image1 == null
+                                    ? Image.asset('assets/images/noimage.png')
+                                    : Image.file(_image1!),
+                              ),
+                            ),
                           ),
                         ),
                         ElevatedButton(
@@ -132,17 +256,29 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                             child: const Text("Borrar")),
                       ],
                     ),
+                    const Spacer(),
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: () => {getImage(2)},
-                          child: Container(
-                            width: 176,
-                            height: 176,
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: _image2 == null
-                                ? Image.asset('assets/images/noimage.png')
-                                : Image.file(_image2!),
+                          onTap: () => {
+                            getImage(2),
+                          },
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.4,
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.4,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
+                                child: _image2 == null
+                                    ? Image.asset('assets/images/noimage.png')
+                                    : Image.file(_image2!),
+                              ),
+                            ),
                           ),
                         ),
                         ElevatedButton(
@@ -161,69 +297,66 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                             child: const Text("Borrar")),
                       ],
                     ),
+                    const Spacer(),
+                    const Spacer(),
                   ]),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   // boton para "post"ear mensajes
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Container(),
+                  ),
                   ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(double.infinity, 60),
-                      ),
-                      onPressed: () {
-                        if (sectorTextController.text.isEmpty) {
-                          CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.error,
-                              title: 'Oops...',
-                              text: 'Ingresa el sector del avistamiento',
-                              loopAnimation: false);
-                        } else if (descripcionTextController.text.length < 15) {
-                          CoolAlert.show(
-                            context: context,
-                            type: CoolAlertType.error,
-                            title: 'Oops...',
-                            text: 'Descripcion de 15 o mas caracteres',
-                            loopAnimation: false,
-                          );
-                        } else if (_image1 == null && _image2 == null) {
-                          CoolAlert.show(
-                            context: context,
-                            type: CoolAlertType.error,
-                            title: 'Oops...',
-                            text: 'Ingresa al menos una imagen',
-                            loopAnimation: false,
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
-                          setState(() {
-                            if (_image1 != null) pathImage1 = _image1!.path;
-                            if (_image2 != null) pathImage2 = _image2!.path;
-                            _futureMensaje = crearMensaje(
-                                sectorTextController.text,
-                                descripcionTextController.text,
-                                pathImage1,
-                                pathImage2);
-                            Navigator.pop(context);
-                          });
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      minimumSize: const Size(double.infinity, 60),
+                    ),
+                    onPressed: () {
+                      if (sectorTextController.text.isEmpty) {
+                        errorSector = true;
+                        if (descripcionTextController.text.length < 15) {
+                          if (descripcionTextController.text.isEmpty) {
+                            errorDescripcion = 1;
+                          } else {
+                            errorDescripcion = 2;
+                          }
+                          if (_image1 == null && _image2 == null) {
+                            errorFotos = true;
+                          }
                         }
-                      },
-                      // asegurarse de que:
-                      // las fotos se deben enviar en base643
-
-                      child: const Text("Denunciar")),
-                  const SizedBox(height: 10),
-                  // boton por si te quieres arrepentir de hacer una publicacion
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        minimumSize: const Size(double.infinity, 60),
-                      ),
-                      onPressed: () {
-                        // volver a donde estabamos
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Volver")),
+                        setState(() {});
+                      } else if (descripcionTextController.text.length < 15) {
+                        if (descripcionTextController.text.isEmpty) {
+                          errorDescripcion = 1;
+                        } else {
+                          errorDescripcion = 2;
+                        }
+                        setState(() {});
+                      } else if (_image1 == null && _image2 == null) {
+                        errorFotos = true;
+                        setState(() {});
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                        setState(() {
+                          if (_image1 != null) pathImage1 = _image1!.path;
+                          if (_image2 != null) pathImage2 = _image2!.path;
+                          _futureMensaje = crearMensaje(
+                              sectorTextController.text,
+                              descripcionTextController.text,
+                              pathImage1,
+                              pathImage2);
+                          Navigator.pop(context);
+                        });
+                      }
+                    },
+                    // asegurarse de que:
+                    // las fotos se deben enviar en base643
+                    child: const Text("Denunciar"),
+                  ),
                 ],
               ))),
     );

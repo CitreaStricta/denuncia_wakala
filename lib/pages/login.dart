@@ -16,19 +16,19 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  late final pref;
-
-  TextEditingController userController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  int errorUsername = 0;
+  int errorPassword = 0;
 
   Future<void> intentarLogin(String user, String password) async {
     final response = await LoginService().validar(user, password);
 
     if (response.statusCode == 200) {
       //almacenar de alguna manera el login
-      //await pref.setString('Usuario', user);
-      Global.localUsername = user;
       final dynamic data = jsonDecode(response.body);
+      Global.localUsername = data['nombre'];
       Global.localId = data["id"];
       if (!mounted) return;
       Navigator.push(
@@ -37,25 +37,121 @@ class _LoginState extends State<Login> {
           builder: (context) => const Lista(),
         ),
       );
+    } else {
+      errorUsername = 2;
+      errorPassword = 2;
+      setState(() {});
     }
   }
 
-  void recoverPassword(String user) {
-    //LoginService().recovery(user, context);
+  Widget usernameField() {
+    if (errorUsername == 1) {
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorUsername = 0;
+            setState(() {});
+          }
+        },
+        controller: emailController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su email",
+          labelText: "Email",
+          errorText: "Debes proporcionar un email",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.mail),
+          ),
+        ),
+      );
+    } else if (errorPassword == 2) {
+      return TextField(
+        controller: emailController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su email",
+          labelText: "Email",
+          errorText: "Email erroneo o",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.mail),
+          ),
+        ),
+      );
+    } else {
+      return TextField(
+        controller: emailController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su email",
+          labelText: "Email",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.mail),
+          ),
+        ),
+      );
+    }
   }
 
-  String? login_guardado = "";
+  Widget passwordField() {
+    if (errorPassword == 1) {
+      return TextField(
+        onChanged: (text) {
+          if (text.isNotEmpty) {
+            errorPassword = 0;
+            setState(() {});
+          }
+        },
+        controller: passwordController,
+        obscureText: true,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su password",
+          labelText: "Password",
+          errorText: "Debes proporcionar una contraseña",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.lock),
+          ),
+        ),
+      );
+    } else if (errorPassword == 2) {
+      return TextField(
+        controller: passwordController,
+        obscureText: true,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su password",
+          labelText: "Password",
+          errorText: "Contraseña erronea",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.lock),
+          ),
+        ),
+      );
+    } else {
+      return TextField(
+        controller: passwordController,
+        obscureText: true,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+          hintText: "Ingrese su password",
+          labelText: "Password",
+          suffixIcon: const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.lock),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    cargaPreferencia();
-  }
-
-  void cargaPreferencia() async {
-    //pref = await SharedPreferences.getInstance();
-    //login_guardado = pref.getString("Usuario");
-    //userController.text = login_guardado == null ? "" : login_guardado!;
   }
 
   SizedBox sizedBox(double height) {
@@ -73,33 +169,23 @@ class _LoginState extends State<Login> {
             children: [
               const Spacer(),
               const Text(
+                "Denuncia Wuakala",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Spacer(),
+              const Text(
                 "Inicia sesión",
-                textScaleFactor: 1.2,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
               sizedBox(30),
-              TextField(
-                controller: userController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  hintText: "Ingrese su nombre de usuario",
-                  labelText: "Usuario",
-                  suffixIcon: const Icon(Icons.person),
-                ),
-              ),
+              usernameField(),
               sizedBox(10),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                  hintText: "Ingrese su password",
-                  labelText: "Password",
-                  suffixIcon: const Icon(Icons.lock),
-                ),
-              ),
+              passwordField(),
               sizedBox(60),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -108,46 +194,28 @@ class _LoginState extends State<Login> {
                   minimumSize: const Size(double.infinity, 60),
                 ),
                 onPressed: () {
-                  if (userController.text.isEmpty) {
-                    //text: 'Debes proporcionar un nombre de usuario',
+                  if (emailController.text.isEmpty) {
+                    errorUsername = 1;
+                    if (passwordController.text.isEmpty) {
+                      errorPassword = 1;
+                    }
+                    setState(() {});
                   } else if (passwordController.text.isEmpty) {
-                    //text: 'Debes proporcionar una password',
+                    errorPassword = 1;
+                    setState(() {});
                   } else {
+                    errorUsername = 0;
+                    errorPassword = 0;
+                    setState(() {});
                     intentarLogin(
-                      userController.text,
+                      emailController.text,
                       passwordController.text,
                     );
                   }
                 },
                 child: const Text("Acceder"),
               ),
-              sizedBox(30),
-              GestureDetector(
-                onLongPress: () {
-                  print("Longpress");
-                },
-                onTap: () {
-                  print("hola");
-                },
-                child: TextButton(
-                  onPressed: () {
-                    if (userController.text.isEmpty) {
-                      //text: 'Debes proporcionar un nombre de usuario',
-                    } else {
-                      recoverPassword(userController.text);
-                    }
-                  },
-                  // AQUI TAMBIEN LA DIRECCION PARA LA PAGINA DE SIGN_UP
-                  child: const Text(
-                    "¿Olvido su password?",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      inherit: false,
-                    ),
-                  ),
-                ),
-              ),
-              sizedBox(5),
+              sizedBox(20),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -175,11 +243,11 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   Column(
                     children: const [
                       Text(
@@ -207,7 +275,7 @@ class _LoginState extends State<Login> {
                   const Spacer()
                 ],
               ),
-              Spacer()
+              const Spacer()
             ],
           ),
         ),
