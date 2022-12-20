@@ -1,3 +1,4 @@
+import 'package:denuncia_wakala/pages/lista_publicaciones.dart';
 import 'package:flutter/material.dart';
 import 'package:denuncia_wakala/pages/login.dart';
 
@@ -12,12 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Login(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const ListaPublicaciones());
   }
 }

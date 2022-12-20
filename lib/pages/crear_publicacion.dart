@@ -33,16 +33,8 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
     setState(() {
       try {
         if (imageNumber == 1) {
-          if (_image1 != null) {
-            showImageViewer(context, Image.file(_image1!).image,
-                swipeDismissible: false);
-          }
           _image1 ??= File(image!.path);
         } else {
-          if (_image2 != null) {
-            showImageViewer(context, Image.file(_image1!).image,
-                swipeDismissible: false);
-          }
           _image2 ??= File(image!.path);
         }
       } catch (e) {
@@ -106,7 +98,16 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: () => {getImage(1)},
+                          onTap: () => {
+                            if (_image1 != null)
+                              {
+                                showImageViewer(
+                                    context, Image.file(_image1!).image,
+                                    swipeDismissible: false)
+                              }
+                            else
+                              {getImage(1)}
+                          },
                           child: Container(
                             width: 176,
                             height: 176,
@@ -135,7 +136,16 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                     Column(
                       children: [
                         GestureDetector(
-                          onTap: () => {getImage(2)},
+                          onTap: () => {
+                            if (_image2 != null)
+                              {
+                                showImageViewer(
+                                    context, Image.file(_image2!).image,
+                                    swipeDismissible: false)
+                              }
+                            else
+                              {getImage(2)}
+                          },
                           child: Container(
                             width: 176,
                             height: 176,
