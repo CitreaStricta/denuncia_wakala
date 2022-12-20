@@ -183,11 +183,11 @@ class _LoginState extends State<Login> {
                   fontSize: 20,
                 ),
               ),
-              sizedBox(30),
+              sizedBox(20),
               usernameField(),
               sizedBox(10),
               passwordField(),
-              sizedBox(60),
+              sizedBox(20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   // backgroundColor: Colors.indigo,

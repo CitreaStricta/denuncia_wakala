@@ -226,9 +226,10 @@ class _CrearPublicacionState extends State<CrearPublicacion> {
                           },
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.4,
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.25,
                               maxHeight:
-                                  MediaQuery.of(context).size.height * 0.4,
+                                  MediaQuery.of(context).size.height * 0.25,
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16.0),
